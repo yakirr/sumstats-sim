@@ -6,7 +6,7 @@ import os
 from estimator import Estimator
 import gprim.annotation as pa
 from pyutils import memo, bsub
-import paths
+import sim.fcor.paths as paths
 
 class TruthRE(Estimator):
     parser = argparse.ArgumentParser(add_help=False, parents=[Estimator.parser])

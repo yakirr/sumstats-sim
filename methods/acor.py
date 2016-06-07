@@ -6,7 +6,7 @@ import pandas as pd
 from pyutils import bsub
 from estimator import Estimator
 import gprim.annotation as pa
-import paths
+import sim.fcor.paths as paths
 
 
 class Acor(Estimator):

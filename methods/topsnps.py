@@ -6,7 +6,7 @@ import pandas as pd
 from estimator import Estimator
 import gprim.annotation as pa
 from pyutils import memo
-import paths
+import sim.fcor.paths as paths
 
 class TopSnps(Estimator):
     parser = argparse.ArgumentParser(add_help=False, parents=[Estimator.parser])

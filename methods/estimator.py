@@ -9,7 +9,7 @@ import os
 import itertools
 from pyutils import fs, bsub, memo
 import sim.metadata as sm
-import paths
+import sim.fcor.paths as paths
 
 
 class Estimator(object):

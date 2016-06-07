@@ -3,7 +3,7 @@ import argparse
 import pandas as pd
 from estimator import Estimator
 import gprim.annotation as pa
-import paths
+import sim.fcor.paths as paths
 
 
 class TestMethodTypeA(Estimator):

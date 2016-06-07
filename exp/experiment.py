@@ -4,7 +4,7 @@ import json
 import sim.metadata as sm
 import sim.methods as smethods
 from pyutils import fs
-import paths
+import sim.fcor.paths as paths
 
 
 class Estimators(object):
