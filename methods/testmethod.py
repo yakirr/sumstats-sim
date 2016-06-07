@@ -2,7 +2,7 @@ from __future__ import print_function, division
 import argparse
 import pandas as pd
 from estimator import Estimator
-import primitives.annotation as pa
+import gprim.annotation as pa
 import paths
 
 

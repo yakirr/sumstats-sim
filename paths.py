@@ -4,10 +4,9 @@ from __future__ import print_function, division
 code = '/groups/price/yakir/py/'
 foreign = '/groups/price/yakir/foreign/'
 
-data = '/groups/price/yakir/fcor/data/'
+data = '/groups/price/yakir/data/'
 reference = data + 'reference/'
-genome_subsets = data + 'genome_subsets/'
-annotations = data + 'annot/'
+annotations = data + 'simannot/'
 simsumstats = data + 'simsumstats/'
 
 results = '/groups/price/yakir/fcor/results/'

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from pyutils import bsub
 from estimator import Estimator
-import primitives.annotation as pa
+import gprim.annotation as pa
 import paths
 
 

@@ -4,7 +4,7 @@ import json
 import pandas as pd
 from pyutils import fs, memo
 from phenotype import Architecture
-import primitives.dataset as prd
+import gprim.dataset as prd
 import paths
 
 class Dataset(prd.Dataset):

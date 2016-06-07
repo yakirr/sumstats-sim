@@ -4,7 +4,7 @@ import numpy as np
 import scipy.stats
 import pandas as pd
 from estimator import Estimator
-import primitives.annotation as pa
+import gprim.annotation as pa
 from pyutils import memo
 import paths
 
