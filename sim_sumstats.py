@@ -15,7 +15,7 @@ def create_beta_and_profiles(s, beta_num):
         beta = s.architecture.draw_beta(chrnum)
         beta.to_csv(s.beta_file(beta_num, chrnum, mode='w'), index=False, sep='\t')
         maf = s.dataset.frq_df(chrnum)['MAF'].values
-        beta['BETA'] /= np.sqrt(2 * maf * (1-maf))
+        beta['BETA'] /= np.sqrt(2 * maf * (1-maf)) # convert beta to plink's per-allele scale
 
         # write sparse beta as well (plink works faster if beta is explicitly sparse)
         sparsebeta = beta.loc[beta['BETA'] != 0]

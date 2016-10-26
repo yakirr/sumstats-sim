@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import json
 from collections import defaultdict
-from primitives.annotation import Annotation
+from gprim.annotation import Annotation
 import paths
 
 
