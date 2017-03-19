@@ -57,8 +57,6 @@ class Simulation(object):
         return self.beta_folder(beta_num) + 'noiseless.pheno'
     def noisyY_filename(self, beta_num):
         return self.beta_folder(beta_num) + 'noisy.pheno'
-    def sumstatschr_filename(self, beta_num, chrnum):
-        return self.chr_filestem(beta_num, chrnum) + '.qassoc'
     def sumstats_filename(self, beta_num):
         return self.beta_folder(beta_num) + 'all.sumstats.gz'
     def sumstats_file(self, beta_num, mode='r'):
