@@ -170,8 +170,8 @@ def submit(args):
     outfilename = s.beta_folder('%I', create=False) + 'sim_sumstats.out'
     bsub.submit(['python', '-u', __file__] + my_args,
             outfilename,
-            # queue='medium',
-            time_in_hours=40,
+            # queue='medium', time_in_hours=40,
+            queue='short', time_in_hours=12,
             jobname=args.sim_name+'.simsumstats[1-{}]'.format(s.num_betas),
             debug=args.debug)
 
