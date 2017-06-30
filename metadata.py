@@ -14,10 +14,8 @@ class Dataset(prd.Dataset):
                 json.load(open(datasets_dict_path))[name])
 
 class Simulation(object):
-    def __init__(self, name, path=paths.simulations):
-        self.name = name
-        self.__dict__.update(
-                json.load(open(path+name+'.json')))
+    def __init__(self, info):
+        self.__dict__.update(info)
         self.dataset = Dataset(self.dataset)
 
     @property
@@ -62,12 +60,20 @@ class Simulation(object):
     def sumstats_file(self, beta_num, mode='r'):
         return gzip.open(self.sumstats_filename(beta_num), mode=mode)
 
+class Experiment(object):
+    def __init__(self, name, path=paths.simulations):
+        self.name=name
+        self.sims = {}
+        for s in json.load(open(path+name+'.json')):
+            new = Simulation(s)
+            self.sims[new.name] = new
+
 
 if __name__ == '__main__':
-    d = Dataset('1000G3.wim5u')
+    d = Dataset('GERAimp.wim9nm')
     print(d.path)
     print(d.bfile_chr)
     print(d.bfile(22))
 
-    s = Simulation('smalltest')
-    print(s.architecture)
+    e = Experiment('vary_h2v')
+    print(e.sims['Sp1_signed1'].architecture)

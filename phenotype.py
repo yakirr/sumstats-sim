@@ -45,8 +45,14 @@ class Architecture(object):
             print('loading size/norm info on', a.stem_chr)
             if a.names(chroms[0]) in self.sqnorms.columns.values:
                 print('WARNING: duplicate annotation column names!')
-            self.sqnorms[a.names(chroms[0])] = a.total_sqnorms(chroms)
-            self.sizes[a.names(chroms[0])] = a.total_sizes(chroms)
+            self.sqnorms[a.names(chroms[0])] = \
+                    pd.DataFrame(
+                        a.total_sqnorms(chroms).reshape((1,-1)),
+                        columns=a.names(chroms[0]))
+            self.sizes[a.names(chroms[0])] = \
+                    pd.DataFrame(
+                        a.total_sizes(chroms).reshape((1,-1)),
+                        columns=a.names(chroms[0]))
         print('done')
         self.h2g = h2g
 

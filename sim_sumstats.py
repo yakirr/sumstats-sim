@@ -20,7 +20,7 @@ def create_beta_and_profiles(s, beta_num):
         sparsebeta = beta.loc[beta['BETA'] != 0]
         sparsebeta.to_csv(s.sparsebeta_file(beta_num,chrnum,mode='w'),
                 index=False, sep='\t')
-        print('norm of beta{}*sqrt(2maf(1-maf)) equals {}'.format(
+        print('squared norm of BETA{}*sqrt(2maf(1-maf)) equals {}'.format(
             chrnum, np.linalg.norm(beta['BETA'] * np.sqrt(2*maf * (1-maf)))**2))
         print('beta{} is length {} and has support of size {}'.format(
             chrnum, len(beta), len(sparsebeta)))
@@ -53,6 +53,8 @@ def make_noiseless_pheno(s, beta_num):
         phenotype = pd.merge(phenotype, profile, how='inner', on=['FID', 'IID'])
         phenotype['PHENO'] += phenotype['SCORESUM']
         phenotype.drop(['SCORESUM'], axis=1, inplace=True)
+    print('variance of noiseless phenotype is:',
+            np.var(phenotype.PHENO), 'It should be', s.h2g)
 
     phenotype.to_csv(s.noiselessY_filename(beta_num),
             index=False,
@@ -140,11 +142,12 @@ def make_sumstats(s, beta_num):
         import gzip, shutil
         print('compressing/deleting intermediate files')
         for chrnum in s.chromosomes:
-            fname = s.chr_filestem(beta_num, chrnum)+'.betanz'
-            with open(fname, 'rb') as f_in, gzip.open(fname+'.gz', 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
+            # # make a gzipped copy of the betanz files before we delete them
+            # fname = s.chr_filestem(beta_num, chrnum)+'.betanz'
+            # with open(fname, 'rb') as f_in, gzip.open(fname+'.gz', 'wb') as f_out:
+            #     shutil.copyfileobj(f_in, f_out)
 
-            for suff in ['beta.gz','betanz','log','nosex','profile','qassoc','assoc.linear']:
+            for suff in ['betanz','log','nosex','profile','qassoc','assoc.linear']:
                 fname = s.chr_filestem(beta_num, chrnum)+'.'+suff
                 print('removing', fname)
                 if os.path.exists(fname): os.remove(fname)
@@ -155,7 +158,7 @@ def make_sumstats(s, beta_num):
 
 def main(args):
     np.random.seed(args.beta_num)
-    s = sm.Simulation(args.sim_name)
+    s = sm.Experiment(args.exp_name).sims[args.sim_name]
     create_beta_and_profiles(s, args.beta_num)
     phenotype = make_noiseless_pheno(s, args.beta_num)
     add_noise_and_save(s, args.beta_num, phenotype)
@@ -163,25 +166,34 @@ def main(args):
     make_sumstats(s, args.beta_num)
 
 def submit(args):
-    s = sm.Simulation(args.sim_name)
-    my_args = ['--sim-name', args.sim_name] + \
-            ['main',
-            '--beta-num', '$LSB_JOBINDEX']
-    outfilename = s.beta_folder('%I', create=False) + 'sim_sumstats.out'
-    bsub.submit(['python', '-u', __file__] + my_args,
-            outfilename,
-            # queue='medium', time_in_hours=40,
-            queue='short', time_in_hours=12,
-            jobname=args.sim_name+'.simsumstats[1-{}]'.format(s.num_betas),
-            debug=args.debug)
+    e = sm.Experiment(args.exp_name)
+    for s in e.sims.values():
+        if hasattr(s, 'ignore'):
+            print('ignoring', s.name)
+            continue
+
+        print('submitting', s.name)
+        my_args = ['--exp-name', args.exp_name] + \
+                ['main',
+                '--sim-name', s.name,
+                '--beta-num', '$LSB_JOBINDEX']
+        outfilename = s.root_folder(create=True) + '.sim_sumstats.%I'
+        bsub.submit(['python', '-u', __file__] + my_args,
+                outfilename,
+                # queue='medium', time_in_hours=40,
+                queue='short', time_in_hours=12,
+                jobname=s.name+'.simsumstats[1-{}]'.format(s.num_betas),
+                debug=args.debug)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--sim-name', type=str, required=True,
-            help='name of the set of the json file of simulation parameters, without ext')
+    parser.add_argument('--exp-name', type=str, required=True,
+            help='name of the experiment file containing simulations, without ext')
 
     main_parser, submit_parser = bsub.add_main_and_submit(parser, main, submit)
 
+    main_parser.add_argument('--sim-name', type=str, required=True,
+            help='name of the simulation to run inside the experiment json file')
     main_parser.add_argument('--beta-num', type=int, required=True,
             help='index of the beta to simulate. 1-indexed!')
     submit_parser.add_argument('-debug', action='store_true', default=False)

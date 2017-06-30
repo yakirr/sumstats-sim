@@ -7,7 +7,7 @@ foreign = '/groups/price/yakir/foreign/'
 data = '/groups/price/yakir/data/'
 reference = data + 'reference/'
 annotations = data + 'simannot/'
-simsumstats = data + 'simsumstats/'
+simsumstats = '/n/scratch2/yar2/' + 'simsumstats/'
 
 results = '/groups/price/yakir/fcor/results/'
 
